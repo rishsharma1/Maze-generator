@@ -10,18 +10,6 @@
 ** Thu 26 Feb 2015 08:42:06 AEDT
 */
 
-int partition(void **A, int n, void *pivot, int (cmp)(void *, void *)) {
+int partition(int *A, int n, int pivot);
+int swap(int *a, int *b);
 
-	int i = -1; // serve as the current index in the array
-	int j; 
-	int ri = n-1;
-	for(j=i+1;j<= ri-1;j++) {
-
-		if(cmp(A[j],pivot) <= 0) {
-			i++;
-			swap(A[j],A[i]);
-		}
-	}
-	swap(A[ri],A[i+1]);
-	return i+1;
-}
