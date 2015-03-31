@@ -5,3 +5,4 @@
 ** Thu 26 Feb 2015 08:42:06 AEDT
 */
 void radixSort(int *A, int n);
+int max_num(int *A,int n);
