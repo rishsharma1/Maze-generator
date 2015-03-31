@@ -72,7 +72,7 @@ main(int argc, char *argv[]) {
 
     if (method == 'h') {
         clock_t startTime = clock();
-        int m = hoare(A, n, k-1);
+        int m = hoare(A, n, k);
         clock_t endTime = clock();
         printf("Time taken to find %d th element (%20d) using Hoare on %10d elements = %ldms\n", k, m, n, (endTime-startTime+500)/1000);
     } else {
