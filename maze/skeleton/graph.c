@@ -12,15 +12,33 @@
 #include <stdio.h>
 #include "graph.h"
 
+#define INITIAL 10
+
 /*
 ** Create graph with number_of_vertices vertices
 */
 Graph *
 graph_new(int number_of_vertices) {
     assert(number_of_vertices > 0);
-
+    int i;
     Graph *g = NULL;
 
+    g = (Graph*)malloc(sizeof(Graph));
+    assert(g);
+
+    g->vertices = (vertices*)malloc(sizeof(Vertex)*number_of_vertices);
+    assert(g->vertices);
+
+    for(i=0;i<number_of_vertices;i++) {
+    	//Initial allocation of memory
+    	g->vertices[i]->max_num_edges = INITIAL;
+    	//Initialising number of edges 
+    	g->vertices[i]->num_edges = 0
+    	//mallocing array of edges
+    	g->vertices[i]->edges = (edges*)malloc(sizeof(Edge)*max_num_edges);
+    	assert(g->vertice[i]->edges)
+    }
+    
     // TODO: malloc space for g
     // TODO: malloc space for number_of_vertices vertices
 
