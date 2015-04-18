@@ -40,3 +40,4 @@ void  graph_set_vertex_data(Graph *g, Label v, void *data);
 
 void graph_default_explore(Graph *g, Label v);
 void graph_dfs(Graph *g, Label v, void (explore)(Graph *g, Label v));
+void swap(Edge *a,Edge *b);

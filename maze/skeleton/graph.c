@@ -25,20 +25,21 @@ graph_new(int number_of_vertices) {
 
     g = (Graph*)malloc(sizeof(Graph));
     assert(g);
+    g->number_of_vertices = number_of_vertices;
 
-    g->vertices = (vertices*)malloc(sizeof(Vertex)*number_of_vertices);
+    g->vertices = (Vertex*)malloc(sizeof(Vertex)*number_of_vertices);
     assert(g->vertices);
 
     for(i=0;i<number_of_vertices;i++) {
     	//Initial allocation of memory
-    	g->vertices[i]->max_num_edges = INITIAL;
+    	g->vertices[i].max_num_edges = INITIAL;
     	//Initialising number of edges 
-    	g->vertices[i]->num_edges = 0
+    	g->vertices[i].num_edges = 0;
     	//mallocing array of edges
-    	g->vertices[i]->edges = (edges*)malloc(sizeof(Edge)*max_num_edges);
-    	assert(g->vertice[i]->edges)
+    	g->vertices[i].edges = (Edge*)malloc(sizeof(Edge)*INITIAL);
+    	assert(g->vertices[i].edges);
     }
-    
+
     // TODO: malloc space for g
     // TODO: malloc space for number_of_vertices vertices
 
@@ -51,8 +52,20 @@ graph_new(int number_of_vertices) {
 void  
 graph_add_edge(Graph *g, Label v, Label u, void *data) {
     assert(g);
+    //no negative vertices
     assert(v >= 0 && v < g->number_of_vertices);
     assert(u >= 0 && u < g->number_of_vertices);
+
+    if(g->vertices[v].num_edges >= g->vertices[v].max_num_edges) {
+    	g->vertices[v].max_num_edges *= 2;
+    	g->vertices[v].edges = (Edge *)realloc(g->vertices[v].edges,sizeof(Edge)*g->vertices[v].max_num_edges);
+    	assert(g->vertices[v].edges);
+    }
+   
+    //add an edge to vertex v, and incrementing the edge count
+    g->vertices[v].edges[g->vertices[v].num_edges++].u = u;
+    //adding data to that edge 
+    g->vertices[v].edges[g->vertices[v].num_edges-1].data = data;
 
         // TODO: Make room in g->vertices[v].edges if no room.
         // TODO: add u and data to g->vertices[v].edges array
@@ -65,9 +78,30 @@ graph_add_edge(Graph *g, Label v, Label u, void *data) {
 */
 void  
 graph_del_edge(Graph *g, Label v, Label u) {
+    int i;
     assert(g);
     assert(v >= 0 && v < g->number_of_vertices);
     assert(u >= 0 && u < g->number_of_vertices);
+
+    for(i=0;i<g->vertices[v].num_edges;i++) {
+
+    	if(g->vertices[v].edges[i].u == u) {
+    		
+    		//swap the edge to be deleted with last item in edges array
+    		swap(&g->vertices[v].edges[i],
+    		&g->vertices[v].edges[g->vertices[v].num_edges-1]);
+    		// free the last edge
+
+
+    		//check this line not working?? get help??
+    		//free(g->vertices[v].edges[g->vertices[v].num_edges-1]);
+    		
+    		//update number of edges 
+    		g->vertices[v].num_edges--;
+    		// found one therefore we can assume to break out of loop
+    		break;
+    	}
+    }
 
     // TODO
 }
@@ -91,10 +125,21 @@ graph_get_edge_array(Graph *g, Label v, int *num_edges) {
 */
 int
 graph_has_edge(Graph *g, Label v, Label u) {
+	int i;
     assert(g);
     assert(v >= 0 && v < g->number_of_vertices);
     assert(u >= 0 && u < g->number_of_vertices);
+
+    for(i=0;i<g->vertices[v].num_edges;i++) {
+
+    	if(g->vertices[v].edges[i].u == u) {
+    		return 1;
     
+    	}
+    }
+    
+
+
     // TODO
 
     return 0;
@@ -145,4 +190,13 @@ graph_dfs(Graph *g, Label v, void (explore)(Graph *g, Label v)) {
         // Now do the rest (if any)
     for(int i = 0; i < g->number_of_vertices ; i++)
         explore(g, i);
+}
+
+// Used to swap edges 
+void
+swap(Edge *a,Edge *b) {
+  Edge temp;
+  temp = *a;
+  *a = *b;
+  *b = temp;
 }
