@@ -72,17 +72,18 @@ void
 explore(Graph *g, Label v) {
     g->vertices[v].data = (void *)1; // mark as visited
 
-    drawMazeR(g, sqrt(g->number_of_vertices) - 2);  // comment out to avoid many pages
+    
+    //drawMazeR(g, sqrt(g->number_of_vertices) - 2);  // comment out to avoid many pages
 
     int n;
     Edge *edges = graph_get_edge_array(g, v, &n);
-    random_sort(edges,n);
+    //random_sort(edges,n);
 
     for(int i=0;i<n;i++) {
-
-    	if(!edges[i].data) {
-    		graph_del_edge(g,v,edges[i]);
-    		explore(g,edges[i]);
+		if(g->vertices[edges[i].u].data==0) {
+    		graph_del_edge(g,v,edges[i].u);
+    		n--;
+    		explore(g,edges[i].u);
     	}
     }
 
@@ -104,7 +105,7 @@ void
 random_sort(Edge *A,int n) {
 	int i;
 	int j;
-
+	srandom(time(NULL));
 	for(i=n-1;i>0;i--) {
 
 		j = rand()%(i+1);
