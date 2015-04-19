@@ -22,6 +22,7 @@
 
     // convert (row, col) to a vertex label (row/col numbering begins at 0)
 #define CELL_TO_LABEL(_row, _col) (((_row) * (n+2)) + (_col))
+void random_sort(Edge *A,int n);
 
 /*
 ** Print an R script for drawing Maze
@@ -75,6 +76,15 @@ explore(Graph *g, Label v) {
 
     int n;
     Edge *edges = graph_get_edge_array(g, v, &n);
+    random_sort(edges,n);
+
+    for(int i=0;i<n;i++) {
+
+    	if(!edges[i].data) {
+    		graph_del_edge(g,v,edges[i]);
+    		explore(g,edges[i]);
+    	}
+    }
 
     // TODO : randomly permute edges
 
@@ -89,6 +99,19 @@ void
 drawMaze(Graph *g, int n) {
     // TO DO - not essential...
 }// drawMaze()
+
+void
+random_sort(Edge *A,int n) {
+	int i;
+	int j;
+
+	for(i=n-1;i>0;i--) {
+
+		j = rand()%(i+1);
+		swap(&A[i],&A[j]);
+	}
+
+}
 
 /*
 ** Get command line params, allocate memory, call dfs, draw result
