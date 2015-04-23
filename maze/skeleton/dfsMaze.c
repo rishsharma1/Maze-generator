@@ -60,7 +60,7 @@ drawMazeR(Graph *g, int n) {
 
     printf("dP(%d,%d, \"red\")\n", 1, -1);
     printf("dP(%d,%d, \"green\")\n", n, -n);
-}// drawMazeR()
+}//drawMazeR()
 
 
 /*
@@ -70,22 +70,32 @@ drawMazeR(Graph *g, int n) {
 */
 void 
 explore(Graph *g, Label v) {
+
+	int i, n;
+
     g->vertices[v].data = (void *)1; // mark as visited
 
     
     //drawMazeR(g, sqrt(g->number_of_vertices) - 2);  // comment out to avoid many pages
-
-    int n;
+ 
     Edge *edges = graph_get_edge_array(g, v, &n);
-    //random_sort(edges,n);
+    random_sort(edges,n);
 
-    for(int i=0;i<n;i++) {
-		if(g->vertices[edges[i].u].data==0) {
-    		graph_del_edge(g,v,edges[i].u);
-    		n--;
-    		explore(g,edges[i].u);
+ 
+    for(i=0;i <g->vertices[v].num_edges;i++) {
+
+    	Label p = edges[i].u;
+    	
+		if(!g->vertices[p].data) {
+			graph_del_edge(g,v,p);
+    		graph_del_edge(g,p,v);
+			explore(g,p);
+    		
+    		//graph_del_edge(g,edges[i].u,v);
+    		
     	}
     }
+
 
     // TODO : randomly permute edges
 
@@ -104,13 +114,14 @@ drawMaze(Graph *g, int n) {
 void
 random_sort(Edge *A,int n) {
 	int i;
-	int j;
-	srandom(time(NULL));
-	for(i=n-1;i>0;i--) {
 
-		j = rand()%(i+1);
-		swap(&A[i],&A[j]);
-	}
+   for (i = 0;i < 1000;i++){
+    	if (n <= 0) break;
+    	int f = random() % n;
+    	int s = random() % n;
+    	swap(A + f, A + s);
+    }
+
 
 }
 

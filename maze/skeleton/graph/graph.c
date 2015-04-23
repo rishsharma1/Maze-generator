@@ -32,7 +32,6 @@ graph_new(int number_of_vertices) {
 
     for(i=0;i<number_of_vertices;i++) {
     	//Initial allocation of memory
-        g->vertices[i].label = i;
     	g->vertices[i].max_num_edges = INITIAL;
     	//Initialising number of edges 
     	g->vertices[i].num_edges = 0;
@@ -52,15 +51,10 @@ graph_new(int number_of_vertices) {
 */
 void  
 graph_add_edge(Graph *g, Label v, Label u, void *data) {
-    Edge e;
     assert(g);
     //no negative vertices
     assert(v >= 0 && v < g->number_of_vertices);
     assert(u >= 0 && u < g->number_of_vertices);
-
-    e.u = u;
-    e.data = data;
-
 
     if(g->vertices[v].num_edges >= g->vertices[v].max_num_edges) {
     	g->vertices[v].max_num_edges *= 2;
@@ -69,12 +63,21 @@ graph_add_edge(Graph *g, Label v, Label u, void *data) {
     }
    
     //add an edge to vertex v, and incrementing the edge count
-    g->vertices[v].edges[g->vertices[v].num_edges++] = e;
+    g->vertices[v].edges[g->vertices[v].num_edges++].u = u;
 
-    
-    // TODO: Make room in g->vertices[v].edges if no room.
-    // TODO: add u and data to g->vertices[v].edges array
-    // TODO: increment g->vertices[v].num_edges
+    /*if(g->vertices[u].num_edges >= g->vertices[u].max_num_edges) {
+    	g->vertices[u].max_num_edges *= 2;
+    	g->vertices[u].edges = (Edge *)realloc(g->vertices[u].edges,sizeof(Edge)*g->vertices[u].max_num_edges);
+    	assert(g->vertices[u].edges);
+    }
+    g->vertices[u].edges[g->vertices[u].num_edges++].u = v;*/
+
+    //adding data to that edge 
+    g->vertices[v].edges[g->vertices[v].num_edges-1].data = data;
+
+        // TODO: Make room in g->vertices[v].edges if no room.
+        // TODO: add u and data to g->vertices[v].edges array
+        // TODO: increment g->vertices[v].num_edges
 }
 
 /*
@@ -96,7 +99,6 @@ graph_del_edge(Graph *g, Label v, Label u) {
     		swap(&g->vertices[v].edges[i],
     		&g->vertices[v].edges[g->vertices[v].num_edges-1]);
     		// free the last edge
-            
 
 
     		//check this line not working?? get help??
