@@ -27,9 +27,9 @@ void random_sort(Edge *A,int n);
 /*
 ** Print an R script for drawing Maze
 */
-void 
+void
 drawMazeR(Graph *g, int n) {
-        // Setup plot area 
+        // Setup plot area
     printf("n <- %d\n",n);
     printf("boxSize <- 0.5\n");
     printf("plot(0,0, xlim=c(0, %d), ylim=c(-%d, 0), "
@@ -64,35 +64,35 @@ drawMazeR(Graph *g, int n) {
 
 
 /*
-** Just like the usual explore except randomise order of edge 
+** Just like the usual explore except randomise order of edge
 ** choices, and remove edges when followed.
 ** ASSUMES always called with v unvisited, so check before calling!
 */
-void 
+void
 explore(Graph *g, Label v) {
 
 	int i, n;
 
     g->vertices[v].data = (void *)1; // mark as visited
 
-    
+
     //drawMazeR(g, sqrt(g->number_of_vertices) - 2);  // comment out to avoid many pages
- 
+
     Edge *edges = graph_get_edge_array(g, v, &n);
     random_sort(edges,n);
 
- 
+
     for(i=0;i <g->vertices[v].num_edges;i++) {
 
     	Label p = edges[i].u;
-    	
+
 		if(!g->vertices[p].data) {
 			graph_del_edge(g,v,p);
     		graph_del_edge(g,p,v);
 			explore(g,p);
-    		
+
     		//graph_del_edge(g,edges[i].u,v);
-    		
+
     	}
     }
 
@@ -106,7 +106,7 @@ explore(Graph *g, Label v) {
 /*
 ** Draw Maze as ascii
 */
-void 
+void
 drawMaze(Graph *g, int n) {
     // TO DO - not essential...
 }// drawMaze()
@@ -128,7 +128,7 @@ random_sort(Edge *A,int n) {
 /*
 ** Get command line params, allocate memory, call dfs, draw result
 */
-int 
+int
 main(int argc, char *argv[]) {
     if (argc != 3) {
         fprintf(stderr,"Usage: %s n { a | r} \n",argv[0]);
@@ -153,9 +153,9 @@ main(int argc, char *argv[]) {
     Graph *g = graph_new((n+2) * (n+2));
 
         // Set all vertices to unvisited
-    for(int i = 0 ; i < n+2 ; i++) 
-        for(int j = 0 ; j < n+2 ; j++) 
-            graph_set_vertex_data(g, CELL_TO_LABEL(i, j), (void *)0); 
+    for(int i = 0 ; i < n+2 ; i++)
+        for(int j = 0 ; j < n+2 ; j++)
+            graph_set_vertex_data(g, CELL_TO_LABEL(i, j), (void *)0);
 
         // Set border vertices to visited
     for(int i = 0 ; i < n+2 ; i++) {
@@ -166,14 +166,14 @@ main(int argc, char *argv[]) {
     }
 
         // For all internal cells, set edges in four directions
-    for(int i = 1 ; i <= n ; i++) 
+    for(int i = 1 ; i <= n ; i++)
         for(int j = 1 ; j <= n ; j++) {
            graph_add_edge(g, CELL_TO_LABEL(i,j), CELL_TO_LABEL(i-1, j), NULL);
            graph_add_edge(g, CELL_TO_LABEL(i,j), CELL_TO_LABEL(i+1, j), NULL);
            graph_add_edge(g, CELL_TO_LABEL(i,j), CELL_TO_LABEL(i, j-1), NULL);
            graph_add_edge(g, CELL_TO_LABEL(i,j), CELL_TO_LABEL(i, j+1), NULL);
         }
-    
+
         /* away we go */
     graph_dfs(g, CELL_TO_LABEL(1,1), explore);
 
